@@ -11,10 +11,14 @@ import {
 } from "./types.js";
 import _ from "lodash";
 import { DeleteAddressResult } from "../Address/types.js";
+import { GraphQLString } from "graphql";
 
 const createUser = {
   type: User,
-  args: { user: { type: CreateUserInputType } },
+  args: {
+    user: { type: CreateUserInputType },
+    method: { type: GraphQLString },
+  },
   resolve: createUserResolver,
 };
 

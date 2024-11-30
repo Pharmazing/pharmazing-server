@@ -1,40 +1,23 @@
 /* eslint-disable no-unused-vars */
 import { GraphQLError } from "graphql";
 import { UserErrorMessage } from "../../../utils/enums.js";
-
 import { verify } from "../../../utils/verify.js";
 import { User } from "../../../db/models/User.js";
 // import { Cart } from "../../../db/models/Cart.js";
-
+import admin from "firebase-admin";
 export const signInResolver = async (_root, args, context) => {
-  const { email, password } = args;
+  const { method } = args;
   try {
     const idToken = context.req.headers.authorization?.split(" ")[1];
-
-    const result = await verify(idToken);
-
-    if (email && password) {
-      const [user] = await User.find({
-        email,
-        password,
-      });
-      if (!user) {
-        throw new GraphQLError(UserErrorMessage.NOT_FOUND);
-      }
-      const token = "1234567890";
-      const { firstName, lastName, age, userId, cartId, contactNumber } = user;
-      // user.token = token;
-      return {
-        firstName,
-        lastName,
-        userId,
-        age,
-        email,
-        token,
-        cartId,
-        contactNumber,
-      };
+    let result = null;
+    if (method === "google") {
+      result = await verify(idToken);
+    } else if (method === "firebase") {
+      result = await admin.auth().verifyIdToken(idToken);
+      // result = jwt.verify(idToken, publicKey, { algorithms: ['RS256'] })
     }
+    // const result = await verify(idToken);
+    console.log(result);
 
     const [user] = await User.find({ userId: result?.sub });
     if (!user) {
@@ -76,7 +59,7 @@ export const getAllUsersResolver = async (_root, _args, context) => {
 };
 
 export const createUserResolver = async (_root, args, context) => {
-  const { user } = args;
+  const { user, method } = args;
   const {
     email,
     password,
@@ -89,19 +72,27 @@ export const createUserResolver = async (_root, args, context) => {
     // country,
     // zip,
     // primary,
+    userId: userIdArg,
     age,
   } = user;
   try {
     const idToken = context.req.headers.authorization?.split(" ")[1];
 
-    const result = await verify(idToken);
+    let result = null;
+    if (method === "google") {
+      result = await verify(idToken);
+    } else if (method === "firebase") {
+      result = await admin.auth().verifyIdToken(idToken);
+    }
 
     const [currUser] = await User.find({ userId: result?.sub });
     if (currUser) {
       return currUser;
     }
     const userId =
-      result?.sub || Math.floor(Math.random() * 10000000).toString();
+      result?.sub ||
+      userIdArg ||
+      Math.floor(Math.random() * 10000000).toString();
     // if its a new user, generate a new userId, generate a new cart object and extract the cartId to put in the user object
     // const newCart = new Cart({
     //   userId,
@@ -114,7 +105,7 @@ export const createUserResolver = async (_root, args, context) => {
     // const {cartId} = await newCart.save();
     const newUser = new User({
       userId,
-      email,
+      email: email || result?.email,
       password,
       firstName,
       lastName,
