@@ -10,7 +10,9 @@ import session from "express-session";
 import cors from "cors";
 import connectDB from "./src/db/config/config.js";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import admin from "firebase-admin";
 
+admin.initializeApp({ projectId: "pharmazing-425018" });
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
 

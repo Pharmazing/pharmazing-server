@@ -6,8 +6,7 @@ import _ from "lodash";
 const signIn = {
   type: User,
   args: {
-    email: { type: GraphQLString },
-    password: { type: GraphQLString },
+    method: { type: GraphQLString },
   },
   resolve: signInResolver,
 };
