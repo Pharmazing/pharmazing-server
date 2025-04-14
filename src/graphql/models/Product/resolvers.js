@@ -1,7 +1,6 @@
 import { GraphQLError } from "graphql";
 import { Product } from "../../../db/models/Product.js";
 import { Vendor } from "../../../db/models/Vendor.js";
-import _ from "lodash";
 
 export const getAllProductsResolver = async (_root, args, _context) => {
   try {
