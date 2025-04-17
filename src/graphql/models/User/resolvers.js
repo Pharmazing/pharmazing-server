@@ -17,7 +17,7 @@ export const signInResolver = async (_root, args, context) => {
       // result = jwt.verify(idToken, publicKey, { algorithms: ['RS256'] })
     }
     // const result = await verify(idToken);
-    console.log(result);
+    // console.log(result);
 
     const [user] = await User.find({ userId: result?.sub });
     if (!user) {

@@ -6,6 +6,10 @@ import { vendorQueries, vendorMutations } from "./models/Vendor/index.js";
 import { productQueries, productMutations } from "./models/Product/index.js";
 import { cartQueries, cartMutations } from "./models/Cart/index.js";
 import _ from "lodash";
+import {
+  prescriptionQueries,
+  prescriptionMutations,
+} from "./models/Prescriptions/index.js";
 
 const queries = _.merge(
   userQueries,
@@ -13,6 +17,7 @@ const queries = _.merge(
   vendorQueries,
   productQueries,
   cartQueries,
+  prescriptionQueries,
 );
 const mutations = _.merge(
   userMutations,
@@ -20,6 +25,7 @@ const mutations = _.merge(
   vendorMutations,
   productMutations,
   cartMutations,
+  prescriptionMutations,
 );
 
 const gqlSchema = new GraphQLSchema({

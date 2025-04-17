@@ -10,7 +10,6 @@ import {
   editProductResolver,
   deleteProductResolver,
 } from "./resolvers.js";
-import { GraphQLString, GraphQLNonNull } from "graphql";
 import _ from "lodash";
 
 const createProduct = {
